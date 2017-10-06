@@ -1,4 +1,4 @@
-AliEmcalCorrectionTask * ConfigureEmcalCorrectionTaskOnLEGOTrain(TString suffix = "")
+PWG::EMCAL::AliEmcalCorrectionTask * ConfigureEmcalCorrectionTaskOnLEGOTrain(TString suffix = "")
 {
-  return AliEmcalCorrectionTask::ConfigureEmcalCorrectionTaskOnLEGOTrain(suffix);
+  return PWG::EMCAL::AliEmcalCorrectionTask::ConfigureEmcalCorrectionTaskOnLEGOTrain(suffix);
 }

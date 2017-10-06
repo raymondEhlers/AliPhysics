@@ -22,6 +22,9 @@
  * @date Jul 8, 2016
  */
 
+namespace PWG {
+namespace EMCAL {
+
 class AliEmcalCorrectionCellTimeCalib : public AliEmcalCorrectionComponent {
  public:
   AliEmcalCorrectionCellTimeCalib();
@@ -57,5 +60,8 @@ private:
   ClassDef(AliEmcalCorrectionCellTimeCalib, 1); // EMCal cell time calibration component
   /// \endcond
 };
+
+} // namespace EMCAL
+} // namespace PWG
 
 #endif /* AliEmcalCorrectionCellTimeCalib_H */

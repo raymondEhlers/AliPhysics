@@ -22,6 +22,9 @@
  * @date Jul 8, 2016
  */
 
+namespace PWG {
+namespace EMCAL {
+
 class AliEmcalCorrectionCellBadChannel : public AliEmcalCorrectionComponent {
  public:
   AliEmcalCorrectionCellBadChannel();
@@ -49,5 +52,8 @@ private:
   ClassDef(AliEmcalCorrectionCellBadChannel, 1); // EMCal cell bad channel correction component
   /// \endcond
 };
+
+} // namespace EMCAL
+} // namespace PWG
 
 #endif /* ALIEMCALCORRECTIONCELLBADCHANNEL_H */

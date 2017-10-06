@@ -17,8 +17,11 @@
 #include "AliMCEvent.h"
 
 /// \cond CLASSIMP
-ClassImp(AliEmcalCorrectionClusterTrackMatcher);
+ClassImp(PWG::EMCAL::AliEmcalCorrectionClusterTrackMatcher);
 /// \endcond
+
+namespace PWG {
+namespace EMCAL {
 
 // Actually registers the class with the base class
 RegisterCorrectionComponent<AliEmcalCorrectionClusterTrackMatcher> AliEmcalCorrectionClusterTrackMatcher::reg("AliEmcalCorrectionClusterTrackMatcher");
@@ -504,3 +507,6 @@ Bool_t AliEmcalCorrectionClusterTrackMatcher::IsTrackInEmcalAcceptance(AliVParti
     return kFALSE;
   }
 }
+
+} // namespace EMCAL
+} // namespace PWG

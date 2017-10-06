@@ -15,6 +15,9 @@
  * @date June 27, 2017
  */
 
+namespace PWG {
+namespace EMCAL {
+
 class AliEmcalCorrectionPHOSCorrections : public AliEmcalCorrectionComponent {
  public:
   AliEmcalCorrectionPHOSCorrections();
@@ -44,5 +47,8 @@ class AliEmcalCorrectionPHOSCorrections : public AliEmcalCorrectionComponent {
   ClassDef(AliEmcalCorrectionPHOSCorrections, 1); // PHOS correction component
   /// \endcond
 };
+
+} // namespace EMCAL
+} // namespace PWG
 
 #endif /* ALIEMCALCORRECTIONPHOSCORRECTIONS_H */

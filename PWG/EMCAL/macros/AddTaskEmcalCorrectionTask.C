@@ -1,4 +1,4 @@
-AliEmcalCorrectionTask* AddTaskEmcalCorrectionTask(TString suffix = "")
+PWG::EMCAL::AliEmcalCorrectionTask* AddTaskEmcalCorrectionTask(TString suffix = "")
 {
-  return AliEmcalCorrectionTask::AddTaskEmcalCorrectionTask(suffix);
+  return PWG::EMCAL::AliEmcalCorrectionTask::AddTaskEmcalCorrectionTask(suffix);
 }

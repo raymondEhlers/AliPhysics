@@ -45,8 +45,11 @@
 #include "AliEmcalCorrectionClusterizer.h"
 
 /// \cond CLASSIMP
-ClassImp(AliEmcalCorrectionClusterizer);
+ClassImp(PWG::EMCAL::AliEmcalCorrectionClusterizer);
 /// \endcond
+
+namespace PWG {
+namespace EMCAL {
 
 // Actually registers the class with the base class
 RegisterCorrectionComponent<AliEmcalCorrectionClusterizer> AliEmcalCorrectionClusterizer::reg("AliEmcalCorrectionClusterizer");
@@ -952,3 +955,6 @@ void AliEmcalCorrectionClusterizer::ClearEMCalClusters()
     }
   }
 }
+
+} // namespace EMCAL
+} // namespace PWG

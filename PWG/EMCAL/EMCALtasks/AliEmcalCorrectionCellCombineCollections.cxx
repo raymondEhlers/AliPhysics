@@ -12,8 +12,11 @@
 #include "AliEmcalCorrectionCellCombineCollections.h"
 
 /// \cond CLASSIMP
-ClassImp(AliEmcalCorrectionCellCombineCollections);
+ClassImp(PWG::EMCAL::AliEmcalCorrectionCellCombineCollections);
 /// \endcond
+
+namespace PWG {
+namespace EMCAL {
 
 // Actually registers the class with the base class
 RegisterCorrectionComponent<AliEmcalCorrectionCellCombineCollections> AliEmcalCorrectionCellCombineCollections::reg("AliEmcalCorrectionCellCombineCollections");
@@ -214,3 +217,5 @@ void AliEmcalCorrectionCellCombineCollections::AddObjectToEvent(TObject *obj, Al
   }
 }
 
+} // namespace EMCAL
+} // namespace PWG

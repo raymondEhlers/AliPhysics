@@ -54,6 +54,9 @@ class AliVParticle;
  * @date Jul 8, 2016
  */
 
+namespace PWG {
+namespace EMCAL {
+
 class AliEmcalCorrectionClusterTrackMatcher : public AliEmcalCorrectionComponent {
  public:
   AliEmcalCorrectionClusterTrackMatcher();
@@ -118,5 +121,8 @@ private:
   ClassDef(AliEmcalCorrectionClusterTrackMatcher, 4); // EMCal cluster track matcher correction component
   /// \endcond
 };
+
+} // namespace EMCAL
+} // namespace PWG
 
 #endif /* ALIEMCALCORRECTIONCLUSTERTRACKMATCHER_H */

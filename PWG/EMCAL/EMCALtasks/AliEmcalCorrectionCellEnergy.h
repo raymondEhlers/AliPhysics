@@ -22,6 +22,9 @@
  * @date Jul 8, 2016
  */
 
+namespace PWG {
+namespace EMCAL {
+
 class AliEmcalCorrectionCellEnergy : public AliEmcalCorrectionComponent {
  public:
   AliEmcalCorrectionCellEnergy();
@@ -55,5 +58,8 @@ private:
   ClassDef(AliEmcalCorrectionCellEnergy, 1); // EMCal cell energy correction component
   /// \endcond
 };
+
+} // namespace EMCAL
+} // namespace PWG
 
 #endif /* ALIEMCALCORRECTIONCELLENERGY_H */

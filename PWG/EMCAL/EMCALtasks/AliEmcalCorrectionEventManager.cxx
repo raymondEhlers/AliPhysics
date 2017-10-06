@@ -4,6 +4,9 @@
 #include "AliEmcalCorrectionEventManager.h"
 #include "AliEmcalContainerUtils.h"
 
+namespace PWG {
+namespace EMCAL {
+
 /**
  * Standard constructor
  *
@@ -47,3 +50,6 @@ AliVEvent * AliEmcalCorrectionEventManager::InputEvent() const
 {
   return AliEmcalContainerUtils::GetEvent(fInputEvent, fUseEmbedding);
 }
+
+} // namespace EMCAL
+} // namespace PWG

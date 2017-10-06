@@ -11,8 +11,11 @@
 #include "AliEmcalCorrectionCellEnergy.h"
 
 /// \cond CLASSIMP
-ClassImp(AliEmcalCorrectionCellEnergy);
+ClassImp(PWG::EMCAL::AliEmcalCorrectionCellEnergy);
 /// \endcond
+
+namespace PWG {
+namespace EMCAL {
 
 // Actually registers the class with the base class
 RegisterCorrectionComponent<AliEmcalCorrectionCellEnergy> AliEmcalCorrectionCellEnergy::reg("AliEmcalCorrectionCellEnergy");
@@ -364,3 +367,6 @@ Bool_t AliEmcalCorrectionCellEnergy::CheckIfRunChanged()
   }
   return runChanged;
 }
+
+} // namespace EMCAL
+} // namespace PWG

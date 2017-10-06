@@ -25,6 +25,9 @@ class AliVEvent;
  * 
  */
 
+namespace PWG {
+namespace EMCAL {
+
 class AliEmcalCopyCollection : public AliAnalysisTaskSE {
  public:
   AliEmcalCopyCollection();
@@ -71,5 +74,8 @@ class AliEmcalCopyCollection : public AliAnalysisTaskSE {
   ClassDef(AliEmcalCopyCollection, 2); // Copy cell, cluster, or track collections
   /// \endcond
 };
+
+} // namespace EMCAL
+} // namespace PWG
 
 #endif /* ALIEMCALCOPYCOLLECTION_H */ 

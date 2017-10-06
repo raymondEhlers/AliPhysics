@@ -18,8 +18,11 @@
 #include "AliESDtrack.h"
 
 /// \cond CLASSIMP
-ClassImp(AliEmcalCopyCollection);
+ClassImp(PWG::EMCAL::AliEmcalCopyCollection);
 /// \endcond
+
+namespace PWG {
+namespace EMCAL {
 
 AliEmcalCopyCollection::AliEmcalCopyCollection():
   AliAnalysisTaskSE("AliEmcalCopyCollection"),
@@ -368,3 +371,6 @@ AliEmcalCopyCollection * AliEmcalCopyCollection::AddTaskEmcalCopyCollection(AliE
 
   return copyCollection;
 }
+
+} // namespace EMCAL
+} // namespace PWG

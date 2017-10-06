@@ -11,8 +11,11 @@
 #include "AliVTrack.h"
 
 /// \cond CLASSIMP
-ClassImp(AliEmcalCorrectionClusterHadronicCorrection);
+ClassImp(PWG::EMCAL::AliEmcalCorrectionClusterHadronicCorrection);
 /// \endcond
+
+namespace PWG {
+namespace EMCAL {
 
 // Actually registers the class with the base class
 RegisterCorrectionComponent<AliEmcalCorrectionClusterHadronicCorrection> AliEmcalCorrectionClusterHadronicCorrection::reg("AliEmcalCorrectionClusterHadronicCorrection");
@@ -847,3 +850,6 @@ Double_t AliEmcalCorrectionClusterHadronicCorrection::ApplyHadCorrAllTracks(Int_
   
   return energyclus;
 }
+
+} // namespace EMCAL
+} // namespace PWG

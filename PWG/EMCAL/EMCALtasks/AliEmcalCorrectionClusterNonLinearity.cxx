@@ -8,8 +8,11 @@
 #include "AliClusterContainer.h"
 
 /// \cond CLASSIMP
-ClassImp(AliEmcalCorrectionClusterNonLinearity);
+ClassImp(PWG::EMCAL::AliEmcalCorrectionClusterNonLinearity);
 /// \endcond
+
+namespace PWG {
+namespace EMCAL {
 
 // Actually registers the class with the base class
 RegisterCorrectionComponent<AliEmcalCorrectionClusterNonLinearity> AliEmcalCorrectionClusterNonLinearity::reg("AliEmcalCorrectionClusterNonLinearity");
@@ -144,3 +147,6 @@ Bool_t AliEmcalCorrectionClusterNonLinearity::Run()
   
   return kTRUE;
 }
+
+} // namespace EMCAL
+} // namespace PWG

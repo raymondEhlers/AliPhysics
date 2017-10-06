@@ -27,12 +27,15 @@
 #include "AliAODEvent.h"
 
 /// \cond CLASSIMP
-ClassImp(AliEmcalCorrectionTask);
+ClassImp(PWG::EMCAL::AliEmcalCorrectionTask);
 /// \endcond
 
 /// \cond CLASSIMP
-ClassImp(AliEmcalCorrectionCellContainer);
+ClassImp(PWG::EMCAL::AliEmcalCorrectionCellContainer);
 /// \endcond
+
+namespace PWG {
+namespace EMCAL {
 
 const std::map <std::string, AliVCluster::VCluUserDefEnergy_t> AliEmcalCorrectionTask::fgkClusterEnergyTypeMap = {
   {"kNonLinCorr", AliVCluster::kNonLinCorr },
@@ -1815,3 +1818,6 @@ void AliEmcalCorrectionTask::Print(Option_t* opt) const
   }
   Printf("%s", toString(includeYAMLConfig).c_str());
 }
+
+} // namespace EMCAL
+} // namespace PWG

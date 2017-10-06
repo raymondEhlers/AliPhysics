@@ -11,8 +11,11 @@
 #include "AliEmcalCorrectionCellTimeCalib.h"
 
 /// \cond CLASSIMP
-ClassImp(AliEmcalCorrectionCellTimeCalib);
+ClassImp(PWG::EMCAL::AliEmcalCorrectionCellTimeCalib);
 /// \endcond
+
+namespace PWG {
+namespace EMCAL {
 
 // Actually registers the class with the base class
 RegisterCorrectionComponent<AliEmcalCorrectionCellTimeCalib> AliEmcalCorrectionCellTimeCalib::reg("AliEmcalCorrectionCellTimeCalib");
@@ -366,3 +369,6 @@ Bool_t AliEmcalCorrectionCellTimeCalib::CheckIfRunChanged()
   }
   return runChanged;
 }
+
+} // namespace EMCAL
+} // namespace PWG

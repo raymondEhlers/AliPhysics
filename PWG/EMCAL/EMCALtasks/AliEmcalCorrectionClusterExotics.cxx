@@ -10,8 +10,11 @@
 #include "AliEMCALRecoUtils.h"
 
 /// \cond CLASSIMP
-ClassImp(AliEmcalCorrectionClusterExotics);
+ClassImp(PWG::EMCAL::AliEmcalCorrectionClusterExotics);
 /// \endcond
+
+namespace PWG {
+namespace EMCAL {
 
 // Actually registers the class with the base class
 RegisterCorrectionComponent<AliEmcalCorrectionClusterExotics> AliEmcalCorrectionClusterExotics::reg("AliEmcalCorrectionClusterExotics");
@@ -147,3 +150,6 @@ Bool_t AliEmcalCorrectionClusterExotics::Run()
   
   return kTRUE;
 }
+
+} // namespace EMCAL
+} // namespace PWG

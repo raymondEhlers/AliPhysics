@@ -31,6 +31,9 @@ class TH2;
  * @date Jul 8, 2016
  */
 
+namespace PWG {
+namespace EMCAL {
+
 class AliEmcalCorrectionClusterHadronicCorrection : public AliEmcalCorrectionComponent {
  public:
   AliEmcalCorrectionClusterHadronicCorrection();
@@ -102,5 +105,8 @@ protected:
   ClassDef(AliEmcalCorrectionClusterHadronicCorrection, 4); // EMCal cluster hadronic correction component
   /// \endcond
 };
+
+} // namespace EMCAL
+} // namespace PWG
 
 #endif /* ALIEMCALCORRECTIONCLUSTERHADRONICCORRECTION_H */

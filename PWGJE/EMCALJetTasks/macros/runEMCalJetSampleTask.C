@@ -17,7 +17,7 @@ class AliVEvent;
 class AliAnalysisManager;
 class AliPhysicsSelectionTask;
 class AliCentralitySelectionTask;
-class AliEmcalCorrectionTask;
+using PWG::EMCAL::AliEmcalCorrectionTask;
 class AliEmcalJetTask;
 class AliAnalysisGrid;
 

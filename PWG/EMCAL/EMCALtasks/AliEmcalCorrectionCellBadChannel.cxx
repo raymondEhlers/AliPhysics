@@ -10,8 +10,11 @@
 #include "AliEmcalCorrectionCellBadChannel.h"
 
 /// \cond CLASSIMP
-ClassImp(AliEmcalCorrectionCellBadChannel);
+ClassImp(PWG::EMCAL::AliEmcalCorrectionCellBadChannel);
 /// \endcond
+
+namespace PWG {
+namespace EMCAL {
 
 // Actually registers the class with the base class
 RegisterCorrectionComponent<AliEmcalCorrectionCellBadChannel> AliEmcalCorrectionCellBadChannel::reg("AliEmcalCorrectionCellBadChannel");
@@ -134,3 +137,6 @@ Bool_t AliEmcalCorrectionCellBadChannel::CheckIfRunChanged()
   }
   return runChanged;
 }
+
+} // namespace EMCAL
+} // namespace PWG

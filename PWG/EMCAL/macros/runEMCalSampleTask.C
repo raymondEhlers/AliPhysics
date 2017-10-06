@@ -4,8 +4,8 @@ class AliVEvent;
 class AliAnalysisManager;
 class AliPhysicsSelectionTask;
 class AliCentralitySelectionTask;
-class AliEmcalCorrectionTask;
 class AliAnalysisGrid;
+using PWG::EMCAL::AliEmcalCorrectionTask;
 
 void LoadMacros();
 void StartGridAnalysis(AliAnalysisManager* pMgr, const char* uniqueName, const char* cGridMode);

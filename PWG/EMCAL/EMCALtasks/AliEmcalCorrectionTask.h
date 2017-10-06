@@ -1,8 +1,6 @@
 #ifndef ALIEMCALCORRECTIONTASK_H
 #define ALIEMCALCORRECTIONTASK_H
 
-class AliEmcalCorrectionCellContainer;
-class AliEmcalCorrectionComponent;
 class AliEMCALGeometry;
 class AliVEvent;
 
@@ -39,6 +37,12 @@ class AliVEvent;
  * @author James Mulligan <james.mulligan@yale.edu>, Yale University
  * @date Jul 8, 2016
  */
+
+namespace PWG {
+namespace EMCAL {
+
+class AliEmcalCorrectionCellContainer;
+class AliEmcalCorrectionComponent;
 
 class AliEmcalCorrectionTask : public AliAnalysisTaskSE {
  public:
@@ -319,5 +323,8 @@ class AliEmcalCorrectionCellContainer {
   ClassDef(AliEmcalCorrectionCellContainer, 1); // EMCal correction cell container
   /// \endcond
 };
+
+} // namespace EMCAL
+} // namespace PWG
 
 #endif /* ALIEMCALCORRECTIONTASK_H */ 

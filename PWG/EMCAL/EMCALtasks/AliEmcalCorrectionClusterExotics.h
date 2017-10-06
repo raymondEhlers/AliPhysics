@@ -23,6 +23,8 @@ class TH2F;
  * @date Jul 8, 2016
  */
 
+namespace PWG {
+namespace EMCAL {
 
 class AliEmcalCorrectionClusterExotics : public AliEmcalCorrectionComponent {
  public:
@@ -53,5 +55,8 @@ protected:
   ClassDef(AliEmcalCorrectionClusterExotics, 2); // EMCal cluster exotics correction component
   /// \endcond
 };
+
+} // namespace EMCAL
+} // namespace PWG
 
 #endif /* ALIEMCALCORRECTIONCLUSTEREXOTICS_H */

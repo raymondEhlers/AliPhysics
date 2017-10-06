@@ -7,8 +7,11 @@
 #include "AliPHOSTenderSupply.h"
 
 /// \cond CLASSIMP
-ClassImp(AliEmcalCorrectionPHOSCorrections);
+ClassImp(PWG::EMCAL::AliEmcalCorrectionPHOSCorrections);
 /// \endcond
+
+namespace PWG {
+namespace EMCAL {
 
 // Actually registers the class with the base class
 RegisterCorrectionComponent<AliEmcalCorrectionPHOSCorrections> AliEmcalCorrectionPHOSCorrections::reg("AliEmcalCorrectionPHOSCorrections");
@@ -107,3 +110,6 @@ Bool_t AliEmcalCorrectionPHOSCorrections::CheckIfRunChanged()
   }
   return runChanged;
 }
+
+} // namespace EMCAL
+} // namespace PWG

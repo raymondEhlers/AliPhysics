@@ -27,6 +27,9 @@ class AliVCaloCells;
  * @date Dec 6, 2016
  */
 
+namespace PWG {
+namespace EMCAL {
+
 class AliEmcalCorrectionCellCombineCollections : public AliEmcalCorrectionComponent {
  public:
   AliEmcalCorrectionCellCombineCollections();
@@ -66,5 +69,8 @@ class AliEmcalCorrectionCellCombineCollections : public AliEmcalCorrectionCompon
   ClassDef(AliEmcalCorrectionCellCombineCollections, 1); // EMCal correction to combine cell collections
   /// \endcond
 };
+
+} // namespace EMCAL
+} // namespace PWG
 
 #endif /* AliEmcalCorrectionCellCombineCollections_H */

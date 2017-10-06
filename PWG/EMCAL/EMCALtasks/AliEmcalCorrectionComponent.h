@@ -40,6 +40,9 @@ class AliVEvent;
  * @date Jul 8, 2016
  */
 
+namespace PWG {
+namespace EMCAL {
+
 class AliEmcalCorrectionComponent : public TNamed {
  public:
   AliEmcalCorrectionComponent();
@@ -242,5 +245,8 @@ class RegisterCorrectionComponent : public AliEmcalCorrectionComponentFactory
     getMap()->insert(std::make_pair(s, &createT<T>));
   }
 };
+
+} // namespace EMCAL
+} // namespace PWG
 
 #endif /* ALIEMCALCORRECTIONCOMPONENT_H */

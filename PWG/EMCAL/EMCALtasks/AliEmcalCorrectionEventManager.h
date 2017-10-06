@@ -27,6 +27,9 @@
  * @date Jun 29, 2017
  */
 
+namespace PWG {
+namespace EMCAL {
+
 class AliEmcalCorrectionEventManager : public AliAnalysisTaskSE
 {
  public:
@@ -64,5 +67,8 @@ class AliEmcalCorrectionEventManager : public AliAnalysisTaskSE
   ClassDef(AliEmcalCorrectionEventManager, 1); // AliEmcalCorrectionEventManager
   /// \endcond
 };
+
+} // namespace EMCAL
+} // namespace PWG
 
 #endif /* AliEmcalCorrectionEventManager.h */

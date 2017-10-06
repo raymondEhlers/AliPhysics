@@ -17,8 +17,11 @@
 #include "AliOADBContainer.h"
 
 /// \cond CLASSIMP
-ClassImp(AliEmcalCorrectionComponent);
+ClassImp(PWG::EMCAL::AliEmcalCorrectionComponent);
 /// \endcond
+
+namespace PWG {
+namespace EMCAL {
 
 // Must create an instance of the map, since it is static
 AliEmcalCorrectionComponentFactory::map_type * AliEmcalCorrectionComponentFactory::componentMap = new AliEmcalCorrectionComponentFactory::map_type;
@@ -380,3 +383,5 @@ Int_t AliEmcalCorrectionComponent::InitBadChannels()
   return 1;
 }
 
+} // namespace EMCAL
+} // namespace PWG

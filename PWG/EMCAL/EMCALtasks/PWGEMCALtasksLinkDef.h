@@ -29,22 +29,6 @@
 #pragma link C++ class  AliEMCALConfigHandler+;
 #pragma link C++ class  AliEMCALConfigurationMatcher+;
 #pragma link C++ class  AliAnalysisTaskEmcalIteratorTest+;
-#pragma link C++ class  AliEmcalCopyCollection+;
-#pragma link C++ class  AliEmcalCorrectionEventManager+;
-#pragma link C++ class  AliEmcalCorrectionTask+;
-#pragma link C++ class  AliEmcalCorrectionCellContainer+;
-#pragma link C++ class  std::vector<AliEmcalCorrectionCellContainer *>+;
-#pragma link C++ class  AliEmcalCorrectionComponent+;
-#pragma link C++ class  AliEmcalCorrectionCellBadChannel+;
-#pragma link C++ class  AliEmcalCorrectionCellEnergy+;
-#pragma link C++ class  AliEmcalCorrectionCellTimeCalib+;
-#pragma link C++ class  AliEmcalCorrectionCellCombineCollections+;
-#pragma link C++ class  AliEmcalCorrectionClusterizer+;
-#pragma link C++ class  AliEmcalCorrectionClusterNonLinearity+;
-#pragma link C++ class  AliEmcalCorrectionClusterExotics+;
-#pragma link C++ class  AliEmcalCorrectionClusterTrackMatcher+;
-#pragma link C++ class  AliEmcalCorrectionClusterHadronicCorrection+;
-#pragma link C++ class  AliEmcalCorrectionPHOSCorrections+;
 #pragma link C++ class  AliAnalysisTaskEmcalOccupancy+;
 
 #pragma link C++ namespace PWG+;
@@ -53,6 +37,22 @@
 #pragma link C++ class PWG::EMCAL::AliEmcalCellMonitorTask+;
 #pragma link C++ class PWG::EMCAL::AliEmcalFastOrMonitorTask+;
 #pragma link C++ class PWG::EMCAL::AliAnalysisTaskEmcalTriggerSelection+;
+#pragma link C++ class PWG::EMCAL::AliEmcalCopyCollection+;
+#pragma link C++ class PWG::EMCAL::AliEmcalCorrectionEventManager+;
+#pragma link C++ class PWG::EMCAL::AliEmcalCorrectionTask+;
+#pragma link C++ class PWG::EMCAL::AliEmcalCorrectionCellContainer+;
+#pragma link C++ class std::vector<PWG::EMCAL::AliEmcalCorrectionCellContainer *>+;
+#pragma link C++ class PWG::EMCAL::AliEmcalCorrectionComponent+;
+#pragma link C++ class PWG::EMCAL::AliEmcalCorrectionCellBadChannel+;
+#pragma link C++ class PWG::EMCAL::AliEmcalCorrectionCellEnergy+;
+#pragma link C++ class PWG::EMCAL::AliEmcalCorrectionCellTimeCalib+;
+#pragma link C++ class PWG::EMCAL::AliEmcalCorrectionCellCombineCollections+;
+#pragma link C++ class PWG::EMCAL::AliEmcalCorrectionClusterizer+;
+#pragma link C++ class PWG::EMCAL::AliEmcalCorrectionClusterNonLinearity+;
+#pragma link C++ class PWG::EMCAL::AliEmcalCorrectionClusterExotics+;
+#pragma link C++ class PWG::EMCAL::AliEmcalCorrectionClusterTrackMatcher+;
+#pragma link C++ class PWG::EMCAL::AliEmcalCorrectionClusterHadronicCorrection+;
+#pragma link C++ class PWG::EMCAL::AliEmcalCorrectionPHOSCorrections+;
 
 // Unit tests
 #pragma link C++ class PWG::EMCAL::TestAliEmcalAODFilterBitCuts+;

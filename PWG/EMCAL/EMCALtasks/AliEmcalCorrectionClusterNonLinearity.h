@@ -23,6 +23,8 @@
  * @date Jul 8, 2016
  */
 
+namespace PWG {
+namespace EMCAL {
 
 class AliEmcalCorrectionClusterNonLinearity : public AliEmcalCorrectionComponent {
  public:
@@ -54,5 +56,8 @@ protected:
   ClassDef(AliEmcalCorrectionClusterNonLinearity, 2); // EMCal cluster non-linearity correction component
   /// \endcond
 };
+
+} // namespace EMCAL
+} // namespace PWG
 
 #endif /* ALIEMCALCORRECTIONCLUSTERNONLINEARITY_H */

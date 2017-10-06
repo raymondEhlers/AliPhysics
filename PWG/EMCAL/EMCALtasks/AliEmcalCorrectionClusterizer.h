@@ -31,6 +31,9 @@ class TStopwatch;
  * @date Jul 8, 2016
  */
 
+namespace PWG {
+namespace EMCAL {
+
 class AliEmcalCorrectionClusterizer : public AliEmcalCorrectionComponent {
  public:
   /// Relates string to the clusterizer type enumeration for YAML configuration
@@ -117,5 +120,8 @@ protected:
   ClassDef(AliEmcalCorrectionClusterizer, 4); // EMCal correction clusterizer component
   /// \endcond
 };
+
+} // namespace EMCAL
+} // namespace PWG
 
 #endif /* ALIEMCALCORRECTIONCLUSTERIZER_H */
