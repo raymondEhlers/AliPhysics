@@ -87,7 +87,7 @@ class AliAnalysisTaskJetExtractor : public AliAnalysisTaskEmcalJet {
   void                        GetMatchedJetObservables(AliEmcalJet* jet, Double_t& matchedJetPt, Double_t& matchedJetDistance, Double_t& matchedJetMass, Double_t& matchedJetAngularity, Double_t& matchedJetpTD, Bool_t isPartLevelMatching);
   void                        ResetMatching(const AliJetContainer &c);
   bool                        PerformGeometricalJetMatching(AliJetContainer& contBase, AliJetContainer& contTag, double maxDist);
-  void                        GetJetTagging(AliJetContainer& contBase, AliJetContainer& contTag, Bool_t isMatchTwo,  Double_t& detJetPt, Double_t& partJetPt);
+  void                        GetJetTagging(AliEmcalJet* jet, AliJetContainer& hybridJetCont, AliJetContainer& detJetCont, AliJetContainer& partJetCont,  Double_t& detJetPt, Double_t& partJetPt);
   void                        GetJetType(AliEmcalJet* jet, Int_t& typeHM, Int_t& typePM, Int_t& typeIC);
   Bool_t                      IsTriggerTrackInEvent();
   Bool_t                      IsTrackInCone(const AliVParticle* track, Double_t eta, Double_t phi, Double_t radius);
