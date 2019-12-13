@@ -106,7 +106,7 @@ void AliTaskCDBconnect::InitGRP()
 	fStorage = Form("local:///cvmfs/alice.cern.ch/calibration/data/%4d/OCDB",year);
 	useCVMFS = kTRUE;
       }
-      else if (inpStor.BeginsWith("local:///cvmfs") && inpStor.EndsWith("/OCDB")) {
+      else if ((inpStor.BeginsWith("local:///cvmfs") || inpStor.BeginsWith("local:///Users/Shared/cvmfs")) && inpStor.EndsWith("/OCDB")) {
 	TString tmp = inpStor;
 	tmp.ReplaceAll("local://","");
 	TString strYold = tmp(TRegexp("/[0-9][0-9][0-9][0-9]/OCDB"));
