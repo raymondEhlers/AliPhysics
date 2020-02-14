@@ -38,44 +38,83 @@ namespace PWGJE {
 namespace EMCALJetTasks {
   class JetSubstructureSplittings;
   class AliAnalysisTaskJetDynamicalGrooming;
-}
-}
-std::ostream & operator<< (std::ostream &in, const PWGJE::EMCALJetTasks::JetSubstructureSplittings &myTask);
-std::ostream & operator<< (std::ostream &in, const PWGJE::EMCALJetTasks::AliAnalysisTaskJetDynamicalGrooming &myTask);
-void swap(PWGJE::EMCALJetTasks::JetSubstructureSplittings & first, PWGJE::EMCALJetTasks::JetSubstructureSplittings & second);
-void swap(PWGJE::EMCALJetTasks::AliAnalysisTaskJetDynamicalGrooming & first, PWGJE::EMCALJetTasks::AliAnalysisTaskJetDynamicalGrooming & second);
+} // namespace EMCALJetTasks
+} // namespace PWGJE
+std::ostream& operator<<(std::ostream& in, const PWGJE::EMCALJetTasks::JetSubstructureSplittings& myTask);
+std::ostream& operator<<(std::ostream& in, const PWGJE::EMCALJetTasks::AliAnalysisTaskJetDynamicalGrooming& myTask);
+void swap(PWGJE::EMCALJetTasks::JetSubstructureSplittings& first,
+     PWGJE::EMCALJetTasks::JetSubstructureSplittings& second);
+void swap(PWGJE::EMCALJetTasks::AliAnalysisTaskJetDynamicalGrooming& first,
+     PWGJE::EMCALJetTasks::AliAnalysisTaskJetDynamicalGrooming& second);
 
 namespace PWGJE {
 namespace EMCALJetTasks {
+namespace SubstructureTree {
 
-/*
+class Subjets {
+ public:
+  // TODO: Fully update and document!
+  //       Getters, Setters, etc.
+  Subjets();
+  virtual ~Subjets() {}
 
-// Another possible option...
-// TODO: Remove the "Constituent" from the variable names if this works...
-class JetConstituents {
-  JetConstituents(): fConstituentPt(), fConstituentEta(), fConstituentPhi(), fConstituentGlobalIndex() {}
-  virtual ~JetConstituents() {}
+  void AddSubjet(const unsigned short splittingNode, const bool passedIterative,
+          const std::vector<unsigned short>& constituentIndices);
 
   bool Clear();
 
- private:
-  std::vector<float> fConstituentPt;                      ///<  Jet constituent pt
-  std::vector<float> fConstituentEta;                     ///<  Jet constituent eta
-  std::vector<float> fConstituentPhi;                     ///<  Jet constituent phi
-  std::vector<unsigned int> fConstituentGlobalIndex;      ///<  Jet constituent global index
-};
+ protected:
+  std::vector<unsigned short> fSplittingNode;                         ///<  Index of the parent splitting node.
+  std::vector<bool> fPartOfIterativeSplitting;                        ///<  True if the splitting is follow an iterative splitting.
+  std::vector<std::vector<unsigned short>> fConstituentJetIndices;    ///<  Constituent jet indices (ie. index by the stored jet constituents, not the global index).
 
-// TODO: Remove "Split" from constituent indices if this works.
+  /// \cond CLASSIMP
+  ClassDef(Subjets, 1) // Subjets from splittings.
+  /// \endcond
+}
+
 class JetSplittings {
+ public:
+  JetSplittings();
+  virtual ~JetSplittings() {}
 
- private:
-  std::vector<float> fKt;                                 ///<  kT between the subjets.
-  std::vector<float> fDeltaR;                             ///<  Delta R between the subjets.
-  std::vector<float> fZ;                                  ///<  Momentum sharing of the splitting.
-  std::vector<std::vector<unsigned int>> fSplitConstituentIndices;  ///<  Constituent indices
+  void AddSplitting(float kt, float deltaR, float z);
+  unsigned int GetNumberOfSplittings() { return fKt.size(); }
+
+  bool Clear();
+
+ protected:
+  std::vector<float> fKt;     ///<  kT between the subjets.
+  std::vector<float> fDeltaR; ///<  Delta R between the subjets.
+  std::vector<float> fZ;      ///<  Momentum sharing of the splitting.
+
+  /// \cond CLASSIMP
+  ClassDef(JetConstituents, 1) // Jet constituents.
+  /// \endcond
 };
 
-*/
+class JetConstituents
+{
+ public:
+  // TODO: Fully update and document!
+  //       Getters, Setters, etc.
+  JetConstituents();
+  virtual ~JetConstituents() {}
+
+  void AddJetConstituent(const AliEmcalParticleJetConstituent& part);
+
+  bool Clear();
+
+ protected:
+  std::vector<float> fPt;                 ///<  Jet constituent pt
+  std::vector<float> fEta;                ///<  Jet constituent eta
+  std::vector<float> fPhi;                ///<  Jet constituent phi
+  std::vector<unsigned int> fGlobalIndex; ///<  Jet constituent global index
+
+  /// \cond CLASSIMP
+  ClassDef(JetConstituents, 1) // Jet constituents.
+  /// \endcond
+};
 
 /**
  * @class JetSubstructureSplittings
