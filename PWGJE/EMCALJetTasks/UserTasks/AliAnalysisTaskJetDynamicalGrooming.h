@@ -83,7 +83,7 @@ class Subjets {
   void AddSubjet(const unsigned short splittingNodeIndex, const bool partOfIterativeSplitting,
           const std::vector<unsigned short>& constituentIndices);
   #if !(defined(__CINT__) || defined(__MAKECINT__))
-  std::tuple<unsigned short, bool, const std::vector<unsigned short> &> GetSubjet(int i) const;
+  std::tuple<unsigned short, bool, const std::vector<unsigned short>> GetSubjet(int i) const;
   #endif
 
   // Printing
@@ -93,9 +93,12 @@ class Subjets {
   std::ostream & Print(std::ostream &in) const;
 
  protected:
-  std::vector<unsigned short> fSplittingNodeIndex;                    ///<  Index of the parent splitting node.
-  std::vector<bool> fPartOfIterativeSplitting;                        ///<  True if the splitting is follow an iterative splitting.
-  std::vector<std::vector<unsigned short>> fConstituentJetIndices;    ///<  Constituent jet indices (ie. index by the stored jet constituents, not the global index).
+  std::vector<unsigned short> GetConstituentIndices(int i) const;
+
+  std::vector<unsigned short> fSplittingNodeIndex;        ///<  Index of the parent splitting node.
+  std::vector<bool> fPartOfIterativeSplitting;            ///<  True if the splitting is follow an iterative splitting.
+  std::vector<unsigned short> fConstituentIndices;        ///<  Constituent jet indices (ie. index by the stored jet constituents, not the global index).
+  std::vector<unsigned int> fConstituentJaggedIndices;    ///<  Mapping indices of the constituent indices to subjets.
 
   /// \cond CLASSIMP
   ClassDef(Subjets, 1) // Subjets from splittings.
@@ -116,9 +119,9 @@ class JetSplittings {
   bool Clear();
 
   // Getters and setters
-  void AddSplitting(float kt, float deltaR, float z);
+  void AddSplitting(float kt, float deltaR, float z, short parentIndex);
   #if !(defined(__CINT__) || defined(__MAKECINT__))
-  std::tuple<float, float, float> GetSplitting(int i) const;
+  std::tuple<float, float, float, short> GetSplitting(int i) const;
   #endif
   unsigned int GetNumberOfSplittings() const { return fKt.size(); }
 
@@ -129,9 +132,10 @@ class JetSplittings {
   std::ostream & Print(std::ostream &in) const;
 
  protected:
-  std::vector<float> fKt;     ///<  kT between the subjets.
-  std::vector<float> fDeltaR; ///<  Delta R between the subjets.
-  std::vector<float> fZ;      ///<  Momentum sharing of the splitting.
+  std::vector<float> fKt;             ///<  kT between the subjets.
+  std::vector<float> fDeltaR;         ///<  Delta R between the subjets.
+  std::vector<float> fZ;              ///<  Momentum sharing of the splitting.
+  std::vector<short> fParentIndex;    ///<  Index of the parent splitting.
 
   /// \cond CLASSIMP
   ClassDef(JetSplittings, 1) // Jet splittings.
@@ -202,15 +206,15 @@ class JetSubstructureSplittings {
   // Setters
   void SetJetPt(float pt) { fJetPt = pt; }
   void AddJetConstituent(const PWG::JETFW::AliEmcalParticleJetConstituent& part);
-  void AddSplitting(float kt, float deltaR, float z);
+  void AddSplitting(float kt, float deltaR, float z, short parentIndex);
   void AddSubjet(const unsigned short splittingNodeIndex, const bool partOfIterativeSplitting,
           const std::vector<unsigned short>& constituentIndices);
   // Getters
   float GetJetPt() { return fJetPt; }
   #if !(defined(__CINT__) || defined(__MAKECINT__))
   std::tuple<float, float, float, int> GetJetConstituent(int i) const;
-  std::tuple<float, float, float> GetSplitting(int i) const;
-  std::tuple<unsigned short, bool, const std::vector<unsigned short> &> GetSubjet(int i) const;
+  std::tuple<float, float, float, short> GetSplitting(int i) const;
+  std::tuple<unsigned short, bool, const std::vector<unsigned short>> GetSubjet(int i) const;
   #endif
   unsigned int GetNumberOfSplittings() { return fJetSplittings.GetNumberOfSplittings(); }
 

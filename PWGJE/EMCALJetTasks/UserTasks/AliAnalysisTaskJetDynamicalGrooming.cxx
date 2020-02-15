@@ -81,7 +81,8 @@ namespace SubstructureTree
 Subjets::Subjets():
   fSplittingNodeIndex{},
   fPartOfIterativeSplitting{},
-  fConstituentJetIndices{}
+  fConstituentIndices{},
+  fConstituentJaggedIndices{}
 {
   // Nothing more to be done.
 }
@@ -92,7 +93,8 @@ Subjets::Subjets():
 Subjets::Subjets(const Subjets& other)
  : fSplittingNodeIndex{other.fSplittingNodeIndex},
   fPartOfIterativeSplitting{other.fPartOfIterativeSplitting},
-  fConstituentJetIndices{other.fConstituentJetIndices}
+  fConstituentIndices{other.fConstituentIndices},
+  fConstituentJaggedIndices{other.fConstituentJaggedIndices}
 {
   // Nothing more to be done.
 }
@@ -111,13 +113,23 @@ bool Subjets::Clear()
 {
   fSplittingNodeIndex.clear();
   fPartOfIterativeSplitting.clear();
-  fConstituentJetIndices.clear();
+  fConstituentIndices.clear();
+  fConstituentJaggedIndices.clear();
   return true;
 }
 
-std::tuple<unsigned short, bool, const std::vector<unsigned short> &> Subjets::GetSubjet(int i) const
+std::vector<unsigned short> Subjets::GetConstituentIndices(int i) const
 {
-  return std::make_tuple(fSplittingNodeIndex.at(i), fPartOfIterativeSplitting.at(i), fConstituentJetIndices.at(i));
+  std::vector<unsigned short> constituentIndices;
+  for (std::size_t index = fConstituentJaggedIndices.at(i); index < fConstituentJaggedIndices.at(i + 1); index++) {
+    constituentIndices.emplace_back(fConstituentIndices.at(index));
+  }
+  return constituentIndices;
+}
+
+std::tuple<unsigned short, bool, const std::vector<unsigned short>> Subjets::GetSubjet(int i) const
+{
+  return std::make_tuple(fSplittingNodeIndex.at(i), fPartOfIterativeSplitting.at(i), GetConstituentIndices(i));
 }
 
 void Subjets::AddSubjet(const unsigned short splittingNodeIndex, const bool partOfIterativeSplitting, const std::vector<unsigned short> & constituentIndices)
@@ -125,7 +137,21 @@ void Subjets::AddSubjet(const unsigned short splittingNodeIndex, const bool part
   fSplittingNodeIndex.emplace_back(splittingNodeIndex);
   // NOTE: emplace_back isn't supported for std::vector<bool> until c++14.
   fPartOfIterativeSplitting.push_back(partOfIterativeSplitting);
-  fConstituentJetIndices.emplace_back(constituentIndices);
+  // We have to handle the constituent indices more carefully. Ideally, we would like to store them in a nested
+  // vector. However, if we do so, ROOT won't store the data in a columnar format. So instead, we create our own
+  // jagged format similar to uproot. We store all the constituents of all of the subjets in one array, and then
+  // we also store the offsets for accessing the constituents for each subjet.
+  for (auto constituent : constituentIndices) {
+    fConstituentIndices.emplace_back(constituent);
+  }
+  // First, we ensure that we have the requisite 0 at the beginning.
+  if (fConstituentJaggedIndices.size() == 0) {
+    fConstituentJaggedIndices.emplace_back(0);
+  }
+  // Next, we store the size. If the size somehow doesn't change for a particular subjet (ie no constituents),
+  // then we would still want to append the same size. (NOTE: This shouldn't happen for subjets because a subjet
+  // must necessarily contain at least one subjet. But it's best to be consistent, so we don it anyway.
+  fConstituentJaggedIndices.emplace_back(fConstituentIndices.size());
 }
 
 /**
@@ -142,7 +168,7 @@ std::string Subjets::toString() const
   {
     tempSS << "#" << (i + 1) << ": Splitting Node: " << fSplittingNodeIndex.at(i)
         << ", part of iterative splitting = " << fPartOfIterativeSplitting.at(i)
-        << ", number of jet constituents = " << fConstituentJetIndices.at(i).size() << "\n";
+        << ", number of jet constituents = " << GetConstituentIndices(i).size() << "\n";
   }
   return tempSS.str();
 }
@@ -177,7 +203,8 @@ void Subjets::Print(Option_t* opt) const { Printf("%s", toString().c_str()); }
 JetSplittings::JetSplittings():
   fKt{},
   fDeltaR{},
-  fZ{}
+  fZ{},
+  fParentIndex{}
 {
   // Nothing more to be done.
 }
@@ -188,7 +215,8 @@ JetSplittings::JetSplittings():
 JetSplittings::JetSplittings(const JetSplittings& other)
  : fKt{other.fKt},
   fDeltaR{other.fDeltaR},
-  fZ{other.fZ}
+  fZ{other.fZ},
+  fParentIndex{other.fParentIndex}
 {
   // Nothing more to be done.
 }
@@ -208,19 +236,21 @@ bool JetSplittings::Clear()
   fKt.clear();
   fDeltaR.clear();
   fZ.clear();
+  fParentIndex.clear();
   return true;
 }
 
-void JetSplittings::AddSplitting(float kt, float deltaR, float z)
+void JetSplittings::AddSplitting(float kt, float deltaR, float z, short i)
 {
   fKt.emplace_back(kt);
   fDeltaR.emplace_back(deltaR);
   fZ.emplace_back(z);
+  fParentIndex.emplace_back(i);
 }
 
-std::tuple<float, float, float> JetSplittings::GetSplitting(int i) const
+std::tuple<float, float, float, short> JetSplittings::GetSplitting(int i) const
 {
-  return std::make_tuple(fKt.at(i), fDeltaR.at(i), fZ.at(i));
+  return std::make_tuple(fKt.at(i), fDeltaR.at(i), fZ.at(i), fParentIndex.at(i));
 }
 
 /**
@@ -236,7 +266,8 @@ std::string JetSplittings::toString() const
   for (std::size_t i = 0; i < fKt.size(); i++)
   {
     tempSS << "#" << (i + 1) << ": kT = " << fKt.at(i)
-        << ", deltaR = " << fDeltaR.at(i) << ", z = " << fZ.at(i) << "\n";
+        << ", deltaR = " << fDeltaR.at(i) << ", z = " << fZ.at(i)
+        << ", parent = " << fParentIndex.at(i) << "\n";
   }
   return tempSS.str();
 }
@@ -425,9 +456,9 @@ void JetSubstructureSplittings::AddJetConstituent(const PWG::JETFW::AliEmcalPart
  * @param[in] deltaR Delta R between the subjets.
  * @param[in] z Momentum sharing between the subjets.
  */
-void JetSubstructureSplittings::AddSplitting(float kt, float deltaR, float z)
+void JetSubstructureSplittings::AddSplitting(float kt, float deltaR, float z, short parentIndex)
 {
-  fJetSplittings.AddSplitting(kt, deltaR, z);
+  fJetSplittings.AddSplitting(kt, deltaR, z, parentIndex);
 }
 
 /**
@@ -446,12 +477,12 @@ std::tuple<float, float, float, int> JetSubstructureSplittings::GetJetConstituen
   return fJetConstituents.GetJetConstituent(i);
 }
 
-std::tuple<float, float, float> JetSubstructureSplittings::GetSplitting(int i) const
+std::tuple<float, float, float, short> JetSubstructureSplittings::GetSplitting(int i) const
 {
   return fJetSplittings.GetSplitting(i);
 }
 
-std::tuple<unsigned short, bool, const std::vector<unsigned short> &> JetSubstructureSplittings::GetSubjet(int i) const
+std::tuple<unsigned short, bool, const std::vector<unsigned short>> JetSubstructureSplittings::GetSubjet(int i) const
 {
   return fSubjets.GetSubjet(i);
 }
@@ -1199,7 +1230,7 @@ void AliAnalysisTaskJetDynamicalGrooming::ExtractJetSplittings(SubstructureTree:
   double delta_R = j1.delta_R(j2);
   double xkt = j2.perp() * sin(delta_R);
   // Add the splitting node.
-  jetSplittings.AddSplitting(xkt, delta_R, z);
+  jetSplittings.AddSplitting(xkt, delta_R, z, splittingNodeIndex);
   // Increment after storing splitting because the parent is the new one.
   //splittingNodeIndex++;
   // -1 because we want to index the parent splitting that was just stored.
@@ -1213,9 +1244,9 @@ void AliAnalysisTaskJetDynamicalGrooming::ExtractJetSplittings(SubstructureTree:
     j2ConstituentIndices.emplace_back(constituent.user_index());
   }
   jetSplittings.AddSubjet(splittingNodeIndex, followingIterativeSplitting, j1ConstituentIndices);
-  jetSplittings.AddSubjet(splittingNodeIndex, false, j2ConstituentIndices);
-
   ExtractJetSplittings(jetSplittings, j1, splittingNodeIndex, followingIterativeSplitting);
+
+  jetSplittings.AddSubjet(splittingNodeIndex, false, j2ConstituentIndices);
   if (fStoreRecursiveSplittings == true) {
     ExtractJetSplittings(jetSplittings, j2, splittingNodeIndex, false);
   }
@@ -1683,7 +1714,8 @@ void swap(PWGJE::EMCALJetTasks::SubstructureTree::Subjets& first,
   // Same ordering as in the constructors (for consistency)
   swap(first.fSplittingNodeIndex, second.fSplittingNodeIndex);
   swap(first.fPartOfIterativeSplitting, second.fPartOfIterativeSplitting);
-  swap(first.fConstituentJetIndices, second.fConstituentJetIndices);
+  swap(first.fConstituentIndices, second.fConstituentIndices);
+  swap(first.fConstituentJaggedIndices, second.fConstituentJaggedIndices);
 }
 
 /**
@@ -1715,6 +1747,7 @@ void swap(PWGJE::EMCALJetTasks::SubstructureTree::JetSplittings& first,
   swap(first.fKt, second.fKt);
   swap(first.fDeltaR, second.fDeltaR);
   swap(first.fZ, second.fZ);
+  swap(first.fParentIndex, second.fParentIndex);
 }
 
 /**
