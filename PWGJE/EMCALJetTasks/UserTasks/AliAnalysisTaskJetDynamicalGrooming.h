@@ -36,14 +36,28 @@ class AliEmcalJetFinder;
 // For generally how to keep the operator in the global namespace, See: https://stackoverflow.com/a/38801633
 namespace PWGJE {
 namespace EMCALJetTasks {
+namespace SubstructureTree {
+  class Subjets;
+  class JetSplittings;
+  class JetConstituents;
   class JetSubstructureSplittings;
+}
   class AliAnalysisTaskJetDynamicalGrooming;
 } // namespace EMCALJetTasks
 } // namespace PWGJE
-std::ostream& operator<<(std::ostream& in, const PWGJE::EMCALJetTasks::JetSubstructureSplittings& myTask);
+std::ostream& operator<<(std::ostream& in, const PWGJE::EMCALJetTasks::SubstructureTree::Subjets& myTask);
+std::ostream& operator<<(std::ostream& in, const PWGJE::EMCALJetTasks::SubstructureTree::JetSplittings& myTask);
+std::ostream& operator<<(std::ostream& in, const PWGJE::EMCALJetTasks::SubstructureTree::JetConstituents& myTask);
+std::ostream& operator<<(std::ostream& in, const PWGJE::EMCALJetTasks::SubstructureTree::JetSubstructureSplittings& myTask);
 std::ostream& operator<<(std::ostream& in, const PWGJE::EMCALJetTasks::AliAnalysisTaskJetDynamicalGrooming& myTask);
-void swap(PWGJE::EMCALJetTasks::JetSubstructureSplittings& first,
-     PWGJE::EMCALJetTasks::JetSubstructureSplittings& second);
+void swap(PWGJE::EMCALJetTasks::SubstructureTree::Subjets& first,
+     PWGJE::EMCALJetTasks::SubstructureTree::Subjets& second);
+void swap(PWGJE::EMCALJetTasks::SubstructureTree::JetSplittings& first,
+     PWGJE::EMCALJetTasks::SubstructureTree::JetSplittings& second);
+void swap(PWGJE::EMCALJetTasks::SubstructureTree::JetConstituents& first,
+     PWGJE::EMCALJetTasks::SubstructureTree::JetConstituents& second);
+void swap(PWGJE::EMCALJetTasks::SubstructureTree::JetSubstructureSplittings& first,
+     PWGJE::EMCALJetTasks::SubstructureTree::JetSubstructureSplittings& second);
 void swap(PWGJE::EMCALJetTasks::AliAnalysisTaskJetDynamicalGrooming& first,
      PWGJE::EMCALJetTasks::AliAnalysisTaskJetDynamicalGrooming& second);
 
@@ -54,34 +68,65 @@ namespace SubstructureTree {
 class Subjets {
  public:
   // TODO: Fully update and document!
-  //       Getters, Setters, etc.
   Subjets();
+  // Additional constructors
+  Subjets(const Subjets & other);
+  Subjets& operator=(Subjets other);
+  friend void ::swap(Subjets & first, Subjets & second);
+  // Avoid implementing move since c++11 is not allowed in the header
   virtual ~Subjets() {}
 
-  void AddSubjet(const unsigned short splittingNode, const bool passedIterative,
-          const std::vector<unsigned short>& constituentIndices);
-
+  /// Reset the properties for the next filling of the tree.
   bool Clear();
 
+  // Getters and setters
+  void AddSubjet(const unsigned short splittingNodeIndex, const bool partOfIterativeSplitting,
+          const std::vector<unsigned short>& constituentIndices);
+  #if !(defined(__CINT__) || defined(__MAKECINT__))
+  std::tuple<unsigned short, bool, const std::vector<unsigned short> &> GetSubjet(int i) const;
+  #endif
+
+  // Printing
+  std::string toString() const;
+  friend std::ostream & ::operator<<(std::ostream &in, const Subjets &myTask);
+  void Print(Option_t* opt = "") const;
+  std::ostream & Print(std::ostream &in) const;
+
  protected:
-  std::vector<unsigned short> fSplittingNode;                         ///<  Index of the parent splitting node.
+  std::vector<unsigned short> fSplittingNodeIndex;                    ///<  Index of the parent splitting node.
   std::vector<bool> fPartOfIterativeSplitting;                        ///<  True if the splitting is follow an iterative splitting.
   std::vector<std::vector<unsigned short>> fConstituentJetIndices;    ///<  Constituent jet indices (ie. index by the stored jet constituents, not the global index).
 
   /// \cond CLASSIMP
   ClassDef(Subjets, 1) // Subjets from splittings.
   /// \endcond
-}
+};
 
 class JetSplittings {
  public:
   JetSplittings();
+  // Additional constructors
+  JetSplittings(const JetSplittings & other);
+  JetSplittings& operator=(JetSplittings other);
+  friend void ::swap(JetSplittings & first, JetSplittings & second);
+  // Avoid implementing move since c++11 is not allowed in the header
   virtual ~JetSplittings() {}
 
-  void AddSplitting(float kt, float deltaR, float z);
-  unsigned int GetNumberOfSplittings() { return fKt.size(); }
-
+  /// Reset the properties for the next filling of the tree.
   bool Clear();
+
+  // Getters and setters
+  void AddSplitting(float kt, float deltaR, float z);
+  #if !(defined(__CINT__) || defined(__MAKECINT__))
+  std::tuple<float, float, float> GetSplitting(int i) const;
+  #endif
+  unsigned int GetNumberOfSplittings() const { return fKt.size(); }
+
+  // Printing
+  std::string toString() const;
+  friend std::ostream & ::operator<<(std::ostream &in, const JetSplittings &myTask);
+  void Print(Option_t* opt = "") const;
+  std::ostream & Print(std::ostream &in) const;
 
  protected:
   std::vector<float> fKt;     ///<  kT between the subjets.
@@ -89,7 +134,7 @@ class JetSplittings {
   std::vector<float> fZ;      ///<  Momentum sharing of the splitting.
 
   /// \cond CLASSIMP
-  ClassDef(JetConstituents, 1) // Jet constituents.
+  ClassDef(JetSplittings, 1) // Jet splittings.
   /// \endcond
 };
 
@@ -97,13 +142,28 @@ class JetConstituents
 {
  public:
   // TODO: Fully update and document!
-  //       Getters, Setters, etc.
   JetConstituents();
+  // Additional constructors
+  JetConstituents(const JetConstituents & other);
+  JetConstituents& operator=(JetConstituents other);
+  friend void ::swap(JetConstituents & first, JetConstituents & second);
+  // Avoid implementing move since c++11 is not allowed in the header
   virtual ~JetConstituents() {}
 
-  void AddJetConstituent(const AliEmcalParticleJetConstituent& part);
-
+  /// Reset the properties for the next filling of the tree.
   bool Clear();
+
+  // Getters and setters
+  void AddJetConstituent(const PWG::JETFW::AliEmcalParticleJetConstituent& part);
+  #if !(defined(__CINT__) || defined(__MAKECINT__))
+  std::tuple<float, float, float, int> GetJetConstituent(int i) const;
+  #endif
+
+  // Printing
+  std::string toString() const;
+  friend std::ostream & ::operator<<(std::ostream &in, const JetConstituents &myTask);
+  void Print(Option_t* opt = "") const;
+  std::ostream & Print(std::ostream &in) const;
 
  protected:
   std::vector<float> fPt;                 ///<  Jet constituent pt
@@ -139,20 +199,20 @@ class JetSubstructureSplittings {
   /// Reset the properties for the next filling of the tree.
   bool Clear();
 
-  // Getters
-  #if !(defined(__CINT__) || defined(__MAKECINT__))
-  std::tuple<float, float, float, const std::vector<unsigned int> &> GetSplitting(int n) const;
-  std::tuple<float, float, float, unsigned int> GetJetConstituent(int i) const;
-  #endif
-  float GetJetPt() { return fJetPt; }
-  float GetLeadingTrackPt() { return fLeadingTrackPt; }
-  // TODO: Fully update getters
-  unsigned int GetNumberOfSplittings() { return fKt.size(); }
   // Setters
-  void AddSplitting(int parentLabel, bool followingIterativeSplitting, float kt, float deltaR, float z, std::vector<unsigned int> indices);
-  void AddJetConstituent(float pt, float eta, float phi, unsigned int globalIndex);
   void SetJetPt(float pt) { fJetPt = pt; }
-  void SetLeadingTrackPt(float pt) { fLeadingTrackPt = pt; }
+  void AddJetConstituent(const PWG::JETFW::AliEmcalParticleJetConstituent& part);
+  void AddSplitting(float kt, float deltaR, float z);
+  void AddSubjet(const unsigned short splittingNodeIndex, const bool partOfIterativeSplitting,
+          const std::vector<unsigned short>& constituentIndices);
+  // Getters
+  float GetJetPt() { return fJetPt; }
+  #if !(defined(__CINT__) || defined(__MAKECINT__))
+  std::tuple<float, float, float, int> GetJetConstituent(int i) const;
+  std::tuple<float, float, float> GetSplitting(int i) const;
+  std::tuple<unsigned short, bool, const std::vector<unsigned short> &> GetSubjet(int i) const;
+  #endif
+  unsigned int GetNumberOfSplittings() { return fJetSplittings.GetNumberOfSplittings(); }
 
   // Printing
   std::string toString() const;
@@ -163,22 +223,16 @@ class JetSubstructureSplittings {
  private:
   // Jet properties
   float fJetPt;                                           ///<  Jet pt.
-  float fLeadingTrackPt;                                  ///<  Leading track pt.
-  std::vector<float> fConstituentPt;                      ///<  Jet constituent pt.
-  std::vector<float> fConstituentEta;                     ///<  Jet constituent eta.
-  std::vector<float> fConstituentPhi;                     ///<  Jet constituent phi.
-  std::vector<unsigned int> fConstituentGlobalIndex;      ///<  Jet constituent global index.
-  std::vector<int> fSplitParentLabel;                     ///<  Index of the parent of the splitting.
-  std::vector<bool> fFollowingIterativeSplitting;         ///<  True if the splitting is follow an iterative splitting.
-  std::vector<float> fKt;                                 ///<  kT between the subjets.
-  std::vector<float> fDeltaR;                             ///<  Delta R between the subjets.
-  std::vector<float> fZ;                                  ///<  Momentum sharing of the splitting.
-  std::vector<std::vector<unsigned int>> fSplitConstituentIndices;  ///<  Constituent indices
+  SubstructureTree::JetConstituents fJetConstituents;     ///<  Jet constituents
+  SubstructureTree::JetSplittings fJetSplittings;         ///<  Jet splittings.
+  SubstructureTree::Subjets fSubjets;                     ///<  Subjets within the jet.
 
   /// \cond CLASSIMP
   ClassDef(JetSubstructureSplittings, 2) // Jet splitting properties.
   /// \endcond
 };
+
+} /* namespace SubstructureTree */
 
 class AliAnalysisTaskJetDynamicalGrooming : public AliAnalysisTaskEmcalJet
 {
@@ -292,8 +346,8 @@ class AliAnalysisTaskJetDynamicalGrooming : public AliAnalysisTaskEmcalJet
   /// Calculate TimeDrop (a = 2) for the earliest splitting.
   double CalculateTimeDrop(const fastjet::PseudoJet & subjet1, const fastjet::PseudoJet & subjet2, const fastjet::PseudoJet & parent, const double R) const;
 
-  void IterativeParents(AliEmcalJet* jet, JetSubstructureSplittings& jetSplittings, bool isData);
-  void ExtractJetSplittings(JetSubstructureSplittings & jetSplittings, fastjet::PseudoJet & inputJet, int parentLabel, bool followingIterativeSplitting);
+  void IterativeParents(AliEmcalJet* jet, SubstructureTree::JetSubstructureSplittings& jetSplittings, bool isData);
+  void ExtractJetSplittings(SubstructureTree::JetSubstructureSplittings & jetSplittings, fastjet::PseudoJet & inputJet, int splittingNodeIndex, bool followingIterativeSplitting);
   void CheckSubjetResolution(AliEmcalJet* fJet, AliEmcalJet* fJetM);
   bool CheckClosePartner(AliEmcalJet* jet, PWG::JETFW::AliEmcalParticleJetConstituent & part1);
 
@@ -325,9 +379,9 @@ class AliAnalysisTaskJetDynamicalGrooming : public AliAnalysisTaskEmcalJet
   bool fStoreRecursiveSplittings; ///<  If true, recursive splittings will be stored.
 
   // Tree variables
-  JetSubstructureSplittings fDataJetSplittings;       ///<  Data jet splittings.
-  JetSubstructureSplittings fMatchedJetSplittings;    ///<  Matched jet splittings.
-  JetSubstructureSplittings fDetLevelJetSplittings;   ///<  Det level (intermediate match) jet splittings.
+  SubstructureTree::JetSubstructureSplittings fDataJetSplittings;       ///<  Data jet splittings.
+  SubstructureTree::JetSubstructureSplittings fMatchedJetSplittings;    ///<  Matched jet splittings.
+  SubstructureTree::JetSubstructureSplittings fDetLevelJetSplittings;   ///<  Det level (intermediate match) jet splittings.
 
   TH1F* fPtJet;                                       //!<! Jet pt
 

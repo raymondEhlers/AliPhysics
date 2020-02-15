@@ -45,7 +45,19 @@
 #include "AliRhoParameter.h"
 
 /// \cond CLASSIMP
-ClassImp(PWGJE::EMCALJetTasks::JetSubstructureSplittings);
+ClassImp(PWGJE::EMCALJetTasks::SubstructureTree::Subjets);
+/// \endcond
+
+/// \cond CLASSIMP
+ClassImp(PWGJE::EMCALJetTasks::SubstructureTree::JetSplittings);
+/// \endcond
+
+/// \cond CLASSIMP
+ClassImp(PWGJE::EMCALJetTasks::SubstructureTree::JetConstituents);
+/// \endcond
+
+/// \cond CLASSIMP
+ClassImp(PWGJE::EMCALJetTasks::SubstructureTree::JetSubstructureSplittings);
 /// \endcond
 
 /// \cond CLASSIMP
@@ -56,21 +68,310 @@ namespace PWGJE
 {
 namespace EMCALJetTasks
 {
+namespace SubstructureTree
+{
+
+/**
+ * Subjets
+ */
+
+/**
+ * Default constructor
+ */
+Subjets::Subjets():
+  fSplittingNodeIndex{},
+  fPartOfIterativeSplitting{},
+  fConstituentJetIndices{}
+{
+  // Nothing more to be done.
+}
+
+/**
+ * Copy constructor
+ */
+Subjets::Subjets(const Subjets& other)
+ : fSplittingNodeIndex{other.fSplittingNodeIndex},
+  fPartOfIterativeSplitting{other.fPartOfIterativeSplitting},
+  fConstituentJetIndices{other.fConstituentJetIndices}
+{
+  // Nothing more to be done.
+}
+
+/**
+ * Assignment operator. Note that we pass by _value_, so a copy is created and it is
+ * fine to swap the values with the created object!
+ */
+Subjets& Subjets::operator=(Subjets other)
+{
+  swap(*this, other);
+  return *this;
+}
+
+bool Subjets::Clear()
+{
+  fSplittingNodeIndex.clear();
+  fPartOfIterativeSplitting.clear();
+  fConstituentJetIndices.clear();
+  return true;
+}
+
+std::tuple<unsigned short, bool, const std::vector<unsigned short> &> Subjets::GetSubjet(int i) const
+{
+  return std::make_tuple(fSplittingNodeIndex.at(i), fPartOfIterativeSplitting.at(i), fConstituentJetIndices.at(i));
+}
+
+void Subjets::AddSubjet(const unsigned short splittingNodeIndex, const bool partOfIterativeSplitting, const std::vector<unsigned short> & constituentIndices)
+{
+  fSplittingNodeIndex.emplace_back(splittingNodeIndex);
+  // NOTE: emplace_back isn't supported for std::vector<bool> until c++14.
+  fPartOfIterativeSplitting.push_back(partOfIterativeSplitting);
+  fConstituentJetIndices.emplace_back(constituentIndices);
+}
+
+/**
+ * Prints information about the task.
+ *
+ * @return std::string containing information about the task.
+ */
+std::string Subjets::toString() const
+{
+  std::stringstream tempSS;
+  tempSS << std::boolalpha;
+  tempSS << "Subjets:\n";
+  for (std::size_t i = 0; i < fSplittingNodeIndex.size(); i++)
+  {
+    tempSS << "#" << (i + 1) << ": Splitting Node: " << fSplittingNodeIndex.at(i)
+        << ", part of iterative splitting = " << fPartOfIterativeSplitting.at(i)
+        << ", number of jet constituents = " << fConstituentJetIndices.at(i).size() << "\n";
+  }
+  return tempSS.str();
+}
+
+/**
+ * Print task information on an output stream using the string representation provided by
+ * Subjets::toString. Used by operator<<
+ * @param in output stream stream
+ * @return reference to the output stream
+ */
+std::ostream& Subjets::Print(std::ostream& in) const
+{
+  in << toString();
+  return in;
+}
+
+/**
+ * Print task information using the string representation provided by
+ * Subjets::toString
+ *
+ * @param[in] opt Unused
+ */
+void Subjets::Print(Option_t* opt) const { Printf("%s", toString().c_str()); }
+
+/**
+ * Jet splittings
+ */
+
+/**
+ * Default constructor.
+ */
+JetSplittings::JetSplittings():
+  fKt{},
+  fDeltaR{},
+  fZ{}
+{
+  // Nothing more to be done.
+}
+
+/**
+ * Copy constructor
+ */
+JetSplittings::JetSplittings(const JetSplittings& other)
+ : fKt{other.fKt},
+  fDeltaR{other.fDeltaR},
+  fZ{other.fZ}
+{
+  // Nothing more to be done.
+}
+
+/**
+ * Assignment operator. Note that we pass by _value_, so a copy is created and it is
+ * fine to swap the values with the created object!
+ */
+JetSplittings& JetSplittings::operator=(JetSplittings other)
+{
+  swap(*this, other);
+  return *this;
+}
+
+bool JetSplittings::Clear()
+{
+  fKt.clear();
+  fDeltaR.clear();
+  fZ.clear();
+  return true;
+}
+
+void JetSplittings::AddSplitting(float kt, float deltaR, float z)
+{
+  fKt.emplace_back(kt);
+  fDeltaR.emplace_back(deltaR);
+  fZ.emplace_back(z);
+}
+
+std::tuple<float, float, float> JetSplittings::GetSplitting(int i) const
+{
+  return std::make_tuple(fKt.at(i), fDeltaR.at(i), fZ.at(i));
+}
+
+/**
+ * Prints information about the task.
+ *
+ * @return std::string containing information about the task.
+ */
+std::string JetSplittings::toString() const
+{
+  std::stringstream tempSS;
+  tempSS << std::boolalpha;
+  tempSS << "Jet splittings:\n";
+  for (std::size_t i = 0; i < fKt.size(); i++)
+  {
+    tempSS << "#" << (i + 1) << ": kT = " << fKt.at(i)
+        << ", deltaR = " << fDeltaR.at(i) << ", z = " << fZ.at(i) << "\n";
+  }
+  return tempSS.str();
+}
+
+/**
+ * Print task information on an output stream using the string representation provided by
+ * JetSplittings::toString. Used by operator<<
+ * @param in output stream stream
+ * @return reference to the output stream
+ */
+std::ostream& JetSplittings::Print(std::ostream& in) const
+{
+  in << toString();
+  return in;
+}
+
+/**
+ * Print task information using the string representation provided by
+ * JetSplittings::toString
+ *
+ * @param[in] opt Unused
+ */
+void JetSplittings::Print(Option_t* opt) const { Printf("%s", toString().c_str()); }
+
+/**
+ * Jet constituents.
+ */
+
+/**
+ * Default constructor.
+ */
+JetConstituents::JetConstituents():
+  fPt{},
+  fEta{},
+  fPhi{},
+  fGlobalIndex{}
+{
+  // Nothing more to be done.
+}
+
+/**
+ * Copy constructor
+ */
+JetConstituents::JetConstituents(const JetConstituents& other)
+ : fPt{other.fPt},
+  fEta{other.fEta},
+  fPhi{other.fPhi},
+  fGlobalIndex{other.fGlobalIndex}
+{
+  // Nothing more to be done.
+}
+
+/**
+ * Assignment operator. Note that we pass by _value_, so a copy is created and it is
+ * fine to swap the values with the created object!
+ */
+JetConstituents& JetConstituents::operator=(JetConstituents other)
+{
+  swap(*this, other);
+  return *this;
+}
+
+bool JetConstituents::Clear()
+{
+  fPt.clear();
+  fEta.clear();
+  fPhi.clear();
+  fGlobalIndex.clear();
+  return true;
+}
+
+void JetConstituents::AddJetConstituent(const PWG::JETFW::AliEmcalParticleJetConstituent & part)
+{
+  fPt.emplace_back(part.Pt());
+  fEta.emplace_back(part.Eta());
+  fPhi.emplace_back(part.Phi());
+  fGlobalIndex.emplace_back(part.GetGlobalIndex());
+}
+
+std::tuple<float, float, float, int> JetConstituents::GetJetConstituent(int i) const
+{
+  return std::make_tuple(fPt.at(i), fEta.at(i), fPhi.at(i), fGlobalIndex.at(i));
+}
+
+/**
+ * Prints information about the task.
+ *
+ * @return std::string containing information about the task.
+ */
+std::string JetConstituents::toString() const
+{
+  std::stringstream tempSS;
+  tempSS << std::boolalpha;
+  tempSS << "Jet constituents:\n";
+  for (std::size_t i = 0; i < fPt.size(); i++)
+  {
+    tempSS << "#" << (i + 1) << ": pt = " << fPt.at(i)
+        << ", eta = " << fEta.at(i) << ", phi = " << fPhi.at(i)
+        << ", global index = " << fGlobalIndex.at(i) << "\n";
+  }
+  return tempSS.str();
+}
+
+/**
+ * Print task information on an output stream using the string representation provided by
+ * JetConstituents::toString. Used by operator<<
+ * @param in output stream stream
+ * @return reference to the output stream
+ */
+std::ostream& JetConstituents::Print(std::ostream& in) const
+{
+  in << toString();
+  return in;
+}
+
+/**
+ * Print task information using the string representation provided by
+ * JetConstituents::toString
+ *
+ * @param[in] opt Unused
+ */
+void JetConstituents::Print(Option_t* opt) const { Printf("%s", toString().c_str()); }
+
+/**
+ * Jet substructure splittings container.
+ */
 
 /**
  * Default constructor.
  */
 JetSubstructureSplittings::JetSubstructureSplittings():
   fJetPt{0},
-  fLeadingTrackPt{0},
-  fConstituentPt{},
-  fConstituentEta{},
-  fConstituentPhi{},
-  fConstituentGlobalIndex{},
-  fKt{},
-  fDeltaR{},
-  fZ{},
-  fSplitConstituentIndices{}
+  fJetConstituents{},
+  fJetSplittings{},
+  fSubjets{}
 {
   // Nothing more to be done.
 }
@@ -81,15 +382,9 @@ JetSubstructureSplittings::JetSubstructureSplittings():
 JetSubstructureSplittings::JetSubstructureSplittings(
  const JetSubstructureSplittings& other)
  : fJetPt{other.fJetPt},
-  fLeadingTrackPt{other.fLeadingTrackPt},
-  fConstituentPt{other.fConstituentPt},
-  fConstituentEta{other.fConstituentEta},
-  fConstituentPhi{other.fConstituentPhi},
-  fConstituentGlobalIndex{other.fConstituentGlobalIndex},
-  fKt{other.fKt},
-  fDeltaR{other.fDeltaR},
-  fZ{other.fZ},
-  fSplitConstituentIndices{other.fSplitConstituentIndices}
+  fJetConstituents{other.fJetConstituents},
+  fJetSplittings{other.fJetSplittings},
+  fSubjets{other.fSubjets}
 {
 }
 
@@ -107,28 +402,20 @@ JetSubstructureSplittings& JetSubstructureSplittings::operator=(
 bool JetSubstructureSplittings::Clear()
 {
   fJetPt = 0;
-  fLeadingTrackPt = 0;
-  fConstituentPt.clear();
-  fConstituentEta.clear();
-  fConstituentPhi.clear();
-  fConstituentGlobalIndex.clear();
-  fKt.clear();
-  fDeltaR.clear();
-  fZ.clear();
-  fSplitConstituentIndices.clear();
+  fJetConstituents.Clear();
+  fJetSplittings.Clear();
+  fSubjets.Clear();
   return true;
 }
 
-std::tuple<float, float, float, const std::vector<unsigned int> &> JetSubstructureSplittings::GetSplitting(int n) const
+/**
+ * Add a jet constituent to the object.
+ *
+ * @param[in] part Constituent to be added.
+ */
+void JetSubstructureSplittings::AddJetConstituent(const PWG::JETFW::AliEmcalParticleJetConstituent& part)
 {
-  // Splitting number starts at 1, so we subtract one from the given number
-  return std::make_tuple(fKt.at(n - 1), fDeltaR.at(n - 1), fZ.at(n - 1), fSplitConstituentIndices.at(n - 1));
-}
-
-std::tuple<float, float, float, unsigned int> JetSubstructureSplittings::GetJetConstituent(int i) const
-{
-  // Splitting number starts at 1, so we subtract one from the given number
-  return std::make_tuple(fConstituentPt.at(i), fConstituentEta.at(i), fConstituentPhi.at(i), fConstituentGlobalIndex.at(i));
+  fJetConstituents.AddJetConstituent(part);
 }
 
 /**
@@ -138,22 +425,35 @@ std::tuple<float, float, float, unsigned int> JetSubstructureSplittings::GetJetC
  * @param[in] deltaR Delta R between the subjets.
  * @param[in] z Momentum sharing between the subjets.
  */
-void JetSubstructureSplittings::AddSplitting(int parentLabel, bool followingIterativeSplitting, float kt, float deltaR, float z, std::vector<unsigned int> indices)
+void JetSubstructureSplittings::AddSplitting(float kt, float deltaR, float z)
 {
-  fSplitParentLabel.emplace_back(parentLabel);
-  fFollowingIterativeSplitting.emplace_back(followingIterativeSplitting);
-  fKt.emplace_back(kt);
-  fDeltaR.emplace_back(deltaR);
-  fZ.emplace_back(z);
-  fSplitConstituentIndices.emplace_back(indices);
+  fJetSplittings.AddSplitting(kt, deltaR, z);
 }
 
-void JetSubstructureSplittings::AddJetConstituent(float pt, float eta, float phi, unsigned int globalIndex)
+/**
+ * Add a subjet to the object.
+ *
+ * @param[in] part Constituent to be added.
+ */
+void JetSubstructureSplittings::AddSubjet(const unsigned short splittingNodeIndex, const bool partOfIterativeSplitting,
+                     const std::vector<unsigned short>& constituentIndices)
 {
-  fConstituentPt.emplace_back(pt);
-  fConstituentEta.emplace_back(eta);
-  fConstituentPhi.emplace_back(phi);
-  fConstituentGlobalIndex.emplace_back(globalIndex);
+  return fSubjets.AddSubjet(splittingNodeIndex, partOfIterativeSplitting, constituentIndices);
+}
+
+std::tuple<float, float, float, int> JetSubstructureSplittings::GetJetConstituent(int i) const
+{
+  return fJetConstituents.GetJetConstituent(i);
+}
+
+std::tuple<float, float, float> JetSubstructureSplittings::GetSplitting(int i) const
+{
+  return fJetSplittings.GetSplitting(i);
+}
+
+std::tuple<unsigned short, bool, const std::vector<unsigned short> &> JetSubstructureSplittings::GetSubjet(int i) const
+{
+  return fSubjets.GetSubjet(i);
 }
 
 /**
@@ -166,23 +466,10 @@ std::string JetSubstructureSplittings::toString() const
   std::stringstream tempSS;
   tempSS << std::boolalpha;
   tempSS << "Splitting information: ";
-  tempSS << "Jet pt = " << fJetPt << ", leading track pt = " << fLeadingTrackPt << "\n";
-  tempSS << "Jet constituents:\n";
-  // Jet constituents
-  for (std::size_t i = 0; i < fConstituentPt.size(); i++)
-  {
-    tempSS << "#" << (i + 1) << ": pt = " << fConstituentPt.at(i)
-        << ", eta = " << fConstituentEta.at(i) << ", phi = " << fConstituentPhi.at(i)
-        << ", global index = " << fConstituentGlobalIndex.at(i) << "\n";
-  }
-  // Jet splittings
-  tempSS << "Jet splittings:\n";
-  for (std::size_t i = 0; i < fKt.size(); i++)
-  {
-    tempSS << "#" << (i + 1) << ": kT = " << fKt.at(i)
-        << ", deltaR = " << fDeltaR.at(i) << ", z = " << fZ.at(i)
-        << ", number of consitutnets: " << fSplitConstituentIndices.at(i).size() << "\n";
-  }
+  tempSS << "Jet pt = " << fJetPt << "\n";
+  tempSS << fSubjets;
+  tempSS << fJetSplittings;
+  tempSS << fJetConstituents;
   return tempSS.str();
 }
 
@@ -205,6 +492,8 @@ std::ostream& JetSubstructureSplittings::Print(std::ostream& in) const
  * @param[in] opt Unused
  */
 void JetSubstructureSplittings::Print(Option_t* opt) const { Printf("%s", toString().c_str()); }
+
+} /* namespace SubstructureTree */
 
 /**
  * Dynamical grooming analysis task.
@@ -474,7 +763,7 @@ void AliAnalysisTaskJetDynamicalGrooming::SetupTree()
   fTreeSubstructure = new TTree(nameoutput, nameoutput);
   // Ensure that splitting the object members into their own branches. It doesn't hurt to pass a higher
   // number to a object that doesn't need to split, so we pass the same to everything.
-  int splitLevel = 2;
+  int splitLevel = 4;
   // Buffer size for storing the branch until it is saved to file.
   // To quote ROOT, "A recommended buffer size is 32000 bytes if you have less than 50 branches."
   int bufferSize = 32000;
@@ -769,7 +1058,6 @@ Bool_t AliAnalysisTaskJetDynamicalGrooming::FillHistograms()
       }
 
       fDataJetSplittings.SetJetPt(ptSubtracted);
-      fDataJetSplittings.SetLeadingTrackPt(jet1->MaxTrackPt());
 
       if (fCutDoubleCounts == kTRUE && fJetShapeType == kDetEmbPartPythia) {
         if (jet1->MaxTrackPt() > jet3->MaxTrackPt()) {
@@ -787,7 +1075,6 @@ Bool_t AliAnalysisTaskJetDynamicalGrooming::FillHistograms()
           kMatched = 3;*/
 
         fMatchedJetSplittings.SetJetPt(jet3->Pt());
-        fMatchedJetSplittings.SetLeadingTrackPt(jet3->MaxTrackPt());
         IterativeParents(jet3, fMatchedJetSplittings, false);
       }
 
@@ -797,11 +1084,9 @@ Bool_t AliAnalysisTaskJetDynamicalGrooming::FillHistograms()
         if (fJetShapeSub == kDerivSub)
           kMatched = 2;*/
         fMatchedJetSplittings.SetJetPt(jet3->Pt());
-        fMatchedJetSplittings.SetLeadingTrackPt(jet3->MaxTrackPt());
         IterativeParents(jet3, fMatchedJetSplittings, false);
         if (fStoreDetLevelJets) {
           fDetLevelJetSplittings.SetJetPt(jet2->Pt());
-          fDetLevelJetSplittings.SetLeadingTrackPt(jet2->MaxTrackPt());
           IterativeParents(jet2, fDetLevelJetSplittings, false);
         }
       }
@@ -822,20 +1107,25 @@ Bool_t AliAnalysisTaskJetDynamicalGrooming::FillHistograms()
  * @param[in] isData If True, treat the splitting as coming from data. This means that ghosts are utilized and track resolution may be considered.
  */
 void AliAnalysisTaskJetDynamicalGrooming::IterativeParents(AliEmcalJet* jet,
-                              JetSubstructureSplittings & jetSplittings, bool isData)
+                              SubstructureTree::JetSubstructureSplittings & jetSplittings,
+                              bool isData)
 {
   AliDebugStream(1) << "Beginning iteration through the splittings.\n";
   std::vector<fastjet::PseudoJet> inputVectors;
   fastjet::PseudoJet pseudoTrack;
+  unsigned int constituentIndex = 0;
   for (auto part : jet->GetParticleConstituents()) {
     if (isData == true && fDoTwoTrack == kTRUE && CheckClosePartner(jet, part))
       continue;
     pseudoTrack.reset(part.Px(), part.Py(), part.Pz(), part.E());
-    pseudoTrack.set_user_index(part.GetGlobalIndex());
+    pseudoTrack.set_user_index(constituentIndex);
     inputVectors.push_back(pseudoTrack);
 
     // Also store the jet constituents in the output
-    jetSplittings.AddJetConstituent(part.Pt(), part.Eta(), part.Phi(), part.GetGlobalIndex());
+    jetSplittings.AddJetConstituent(part);
+
+    // Keep track of the number of constituents.
+    constituentIndex++;
   }
 
   try {
@@ -855,13 +1145,13 @@ void AliAnalysisTaskJetDynamicalGrooming::IterativeParents(AliEmcalJet* jet,
     std::vector<fastjet::PseudoJet> outputJets = cs->inclusive_jets(0);
 
     fastjet::PseudoJet jj;
-    fastjet::PseudoJet j1;
-    fastjet::PseudoJet j2;
+    //fastjet::PseudoJet j1;
+    //fastjet::PseudoJet j2;
     jj = outputJets[0];
 
     // Store the jet splittings.
-    int parentLabel = -1;
-    ExtractJetSplittings(jetSplittings, jj, parentLabel, true);
+    int splittingNodeIndex = -1;
+    ExtractJetSplittings(jetSplittings, jj, splittingNodeIndex, true);
     /*while (jj.has_parents(j1, j2)) {
       splittingLabel++;
       // j1 should always be the harder of the two subjets.
@@ -890,7 +1180,7 @@ void AliAnalysisTaskJetDynamicalGrooming::IterativeParents(AliEmcalJet* jet,
   return;
 }
 
-void AliAnalysisTaskJetDynamicalGrooming::ExtractJetSplittings(JetSubstructureSplittings & jetSplittings, fastjet::PseudoJet & inputJet, int parentLabel, bool followingIterativeSplitting)
+void AliAnalysisTaskJetDynamicalGrooming::ExtractJetSplittings(SubstructureTree::JetSubstructureSplittings & jetSplittings, fastjet::PseudoJet & inputJet, int splittingNodeIndex, bool followingIterativeSplitting)
 {
   fastjet::PseudoJet j1;
   fastjet::PseudoJet j2;
@@ -908,19 +1198,26 @@ void AliAnalysisTaskJetDynamicalGrooming::ExtractJetSplittings(JetSubstructureSp
   double z = j2.perp() / (j2.perp() + j1.perp());
   double delta_R = j1.delta_R(j2);
   double xkt = j2.perp() * sin(delta_R);
-  std::vector<unsigned int> constituentIndices;
-  for (auto constituent: j1.constituents()) {
-    constituentIndices.emplace_back(constituent.user_index());
-  }
-  jetSplittings.AddSplitting(parentLabel, followingIterativeSplitting, xkt, delta_R, z, constituentIndices);
+  // Add the splitting node.
+  jetSplittings.AddSplitting(xkt, delta_R, z);
   // Increment after storing splitting because the parent is the new one.
-  //parentLabel++;
+  //splittingNodeIndex++;
   // -1 because we want to index the parent splitting that was just stored.
-  parentLabel = jetSplittings.GetNumberOfSplittings() - 1;
+  splittingNodeIndex = jetSplittings.GetNumberOfSplittings() - 1;
+  // Store the subjets
+  std::vector<unsigned short> j1ConstituentIndices, j2ConstituentIndices;
+  for (auto constituent: j1.constituents()) {
+    j1ConstituentIndices.emplace_back(constituent.user_index());
+  }
+  for (auto constituent: j2.constituents()) {
+    j2ConstituentIndices.emplace_back(constituent.user_index());
+  }
+  jetSplittings.AddSubjet(splittingNodeIndex, followingIterativeSplitting, j1ConstituentIndices);
+  jetSplittings.AddSubjet(splittingNodeIndex, false, j2ConstituentIndices);
 
-  ExtractJetSplittings(jetSplittings, j1, parentLabel, followingIterativeSplitting);
+  ExtractJetSplittings(jetSplittings, j1, splittingNodeIndex, followingIterativeSplitting);
   if (fStoreRecursiveSplittings == true) {
-    ExtractJetSplittings(jetSplittings, j2, parentLabel, false);
+    ExtractJetSplittings(jetSplittings, j2, splittingNodeIndex, false);
   }
 }
 
@@ -1359,6 +1656,100 @@ void AliAnalysisTaskJetDynamicalGrooming::Print(Option_t* opt) const { Printf("%
 } /* namespace PWGJE */
 
 /**
+ * Subjets
+ */
+
+/**
+ * Implementation of the output stream operator for SubstructureTree::Subjets. Printing
+ * basic task information provided by function toString
+ * @param in output stream
+ * @param myTask Task which will be printed
+ * @return Reference to the output stream
+ */
+std::ostream& operator<<(std::ostream& in, const PWGJE::EMCALJetTasks::SubstructureTree::Subjets& myTask)
+{
+  std::ostream& result = myTask.Print(in);
+  return result;
+}
+
+/**
+ * Swap function. Created using guide described here: https://stackoverflow.com/a/3279550.
+ */
+void swap(PWGJE::EMCALJetTasks::SubstructureTree::Subjets& first,
+     PWGJE::EMCALJetTasks::SubstructureTree::Subjets& second)
+{
+  using std::swap;
+
+  // Same ordering as in the constructors (for consistency)
+  swap(first.fSplittingNodeIndex, second.fSplittingNodeIndex);
+  swap(first.fPartOfIterativeSplitting, second.fPartOfIterativeSplitting);
+  swap(first.fConstituentJetIndices, second.fConstituentJetIndices);
+}
+
+/**
+ * JetSplittings
+ */
+
+/**
+ * Implementation of the output stream operator for SubstructureTree::JetSplittings. Printing
+ * basic task information provided by function toString
+ * @param in output stream
+ * @param myTask Task which will be printed
+ * @return Reference to the output stream
+ */
+std::ostream& operator<<(std::ostream& in, const PWGJE::EMCALJetTasks::SubstructureTree::JetSplittings& myTask)
+{
+  std::ostream& result = myTask.Print(in);
+  return result;
+}
+
+/**
+ * Swap function. Created using guide described here: https://stackoverflow.com/a/3279550.
+ */
+void swap(PWGJE::EMCALJetTasks::SubstructureTree::JetSplittings& first,
+     PWGJE::EMCALJetTasks::SubstructureTree::JetSplittings& second)
+{
+  using std::swap;
+
+  // Same ordering as in the constructors (for consistency)
+  swap(first.fKt, second.fKt);
+  swap(first.fDeltaR, second.fDeltaR);
+  swap(first.fZ, second.fZ);
+}
+
+/**
+ * JetConstituents
+ */
+
+/**
+ * Implementation of the output stream operator for SubstructureTree::JetConstituents. Printing
+ * basic task information provided by function toString
+ * @param in output stream
+ * @param myTask Task which will be printed
+ * @return Reference to the output stream
+ */
+std::ostream& operator<<(std::ostream& in, const PWGJE::EMCALJetTasks::SubstructureTree::JetConstituents& myTask)
+{
+  std::ostream& result = myTask.Print(in);
+  return result;
+}
+
+/**
+ * Swap function. Created using guide described here: https://stackoverflow.com/a/3279550.
+ */
+void swap(PWGJE::EMCALJetTasks::SubstructureTree::JetConstituents& first,
+     PWGJE::EMCALJetTasks::SubstructureTree::JetConstituents& second)
+{
+  using std::swap;
+
+  // Same ordering as in the constructors (for consistency)
+  swap(first.fPt, second.fPt);
+  swap(first.fEta, second.fEta);
+  swap(first.fPhi, second.fPhi);
+  swap(first.fGlobalIndex, second.fGlobalIndex);
+}
+
+/**
  * Jet substructure splittings
  */
 
@@ -1369,7 +1760,7 @@ void AliAnalysisTaskJetDynamicalGrooming::Print(Option_t* opt) const { Printf("%
  * @param myTask Task which will be printed
  * @return Reference to the output stream
  */
-std::ostream& operator<<(std::ostream& in, const PWGJE::EMCALJetTasks::JetSubstructureSplittings& myTask)
+std::ostream& operator<<(std::ostream& in, const PWGJE::EMCALJetTasks::SubstructureTree::JetSubstructureSplittings& myTask)
 {
   std::ostream& result = myTask.Print(in);
   return result;
@@ -1378,17 +1769,16 @@ std::ostream& operator<<(std::ostream& in, const PWGJE::EMCALJetTasks::JetSubstr
 /**
  * Swap function. Created using guide described here: https://stackoverflow.com/a/3279550.
  */
-void swap(PWGJE::EMCALJetTasks::JetSubstructureSplittings& first,
-     PWGJE::EMCALJetTasks::JetSubstructureSplittings& second)
+void swap(PWGJE::EMCALJetTasks::SubstructureTree::JetSubstructureSplittings& first,
+     PWGJE::EMCALJetTasks::SubstructureTree::JetSubstructureSplittings& second)
 {
   using std::swap;
 
   // Same ordering as in the constructors (for consistency)
   swap(first.fJetPt, second.fJetPt);
-  swap(first.fLeadingTrackPt, second.fLeadingTrackPt);
-  swap(first.fKt, second.fKt);
-  swap(first.fDeltaR, second.fDeltaR);
-  swap(first.fZ, second.fZ);
+  swap(first.fJetConstituents, second.fJetConstituents);
+  swap(first.fJetSplittings, second.fJetSplittings);
+  swap(first.fSubjets, second.fSubjets);
 }
 
 /**
